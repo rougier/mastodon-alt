@@ -150,38 +150,38 @@ NAME is unused."
 If DISPLAY is t, the returned string is propertized and uses the
 display property to show the short url."
 
-   (with-temp-buffer
-     (insert string)
+  (with-temp-buffer
+    (insert string)
      
-     ;; WARNING: We get rid of display properties because it messes
-     ;;          everything We could probably be less radical but
-     ;;          it'll do for the time being.
-     ;; (add-text-properties (point-min) (point-max) '(display nil))
-     (remove-text-properties (point-min) (point-max) '(display))
+    ;; WARNING: We get rid of display properties because it messes
+    ;;          everything We could probably be less radical but
+    ;;          it'll do for the time being.
+    ;; (add-text-properties (point-min) (point-max) '(display nil))
+    (remove-text-properties (point-min) (point-max) '(display))
 
-     (goto-char (point-min))
-     (while (re-search-forward "\\(Media:: \\)*\\(http[s]*:[^() \\\n\"]*\\)" nil t)
-       (let* ((match (match-string 2))
-              (props (text-properties-at (match-beginning 0)))
-              (url (save-match-data
-                     (url-generic-parse-url match)))
-              (type (url-type url))
-              (host (url-host url))
-              (file (url-filename url))
-              (ext (file-name-extension file))
-              (ext (save-match-data
-                     (when (file-name-extension file)
-                       (car (split-string (file-name-extension file) "?")))))
-              (name (file-name-base file))
-              (short (mastodon-alt-tl--shorten-url-format host name ext))
-              (props (if display (append `(display ,short) props)
-                         props))
-              (short (if display match short)))
-         (set-text-properties 0 (length short) props short)
-         (when (or (not mastodon-tl--display-media-p)
-                   (eq 0 (length (match-string 1))))
-           (replace-match short))))
-     (buffer-substring (point-min) (point-max))))
+    (goto-char (point-min))
+    (while (re-search-forward "\\(Media:: \\)*\\(http[s]*:[^() \\\n\"]*\\)" nil t)
+      (let* ((match (match-string 2))
+             (props (text-properties-at (match-beginning 0)))
+             (url (save-match-data
+                    (url-generic-parse-url match)))
+             (type (url-type url))
+             (host (url-host url))
+             (file (url-filename url))
+             (ext (file-name-extension file))
+             (ext (save-match-data
+                    (when (file-name-extension file)
+                      (car (split-string (file-name-extension file) "?")))))
+             (name (file-name-base file))
+             (short (mastodon-alt-tl--shorten-url-format host name ext))
+             (props (if display (append `(display ,short) props)
+                      props))
+             (short (if display match short)))
+        (set-text-properties 0 (length short) props short)
+        (when (or (not mastodon-tl--display-media-p)
+                  (eq 0 (length (match-string 1))))
+          (replace-match short))))
+    (buffer-substring (point-min) (point-max))))
 
 (defun mastodon-alt-tl--folding-box (content &optional size title folded prefix style)
   "Enclose CONTENT text with a box of given STYLE and SIZE.
@@ -280,10 +280,10 @@ can be either 'unicode, 'ascii or 'unicode-x with x in [1,7]."
                           'face (get-char-property 0 'face box-B))
                          box-BR))
          (body (mapconcat (lambda (line)
-                             (format body-format line))
-                           (split-string content "[\n]") ""))
+                            (format body-format line))
+                          (split-string content "[\n]") ""))
          (title (when title (truncate-string-to-width title
-                               (- size (length prefix) 4) nil nil "…")))
+                                                      (- size (length prefix) 4) nil nil "…")))
          (title (when title (concat prefix
                                     box-L
                                     "  "
@@ -298,7 +298,7 @@ can be either 'unicode, 'ascii or 'unicode-x with x in [1,7]."
                                     box-R
                                     "\n")))
          (body (propertize body 'invisible folded)))
-         (concat header (or title "")  body footer)))
+    (concat header (or title "")  body footer)))
 
 (defun mastodon-alt-tl--folding-box-toggle ()
   "Fold / unfold a folding box."
@@ -331,26 +331,25 @@ This should be ran just before an update."
 
   (remove-overlays (point-min) (point-max) 'mastodon-alt-update t)
   (let* ((overlay (make-overlay (point-min) (+ (point-min) 1) nil t))
-        (width (- (window-width) 1))
-        (update (format-time-string " Update %H:%M "))
-        (line (concat
-               (propertize "\n" 'face `(:foreground ,(face-background 'default)
-                                        :extend t
-                                        :strike-through t))
-               (propertize (make-string (/ (- width (length update) 3) 2) ? )
-                           'face '(:inherit mastodon-alt-tl-update-face
-                                   :strike-through t))
-               (propertize update
-                           'face '(:inherit mastodon-alt-tl-update-face
-                                   :inverse-video t
-                                   :strike-through nil))
-               (propertize "\n"
-                           'face '(:inherit mastodon-alt-tl-update-face
-                                            :strike-through t))
-               (propertize "\n" 'face `(:foreground ,(face-background 'default)
-                                        :extend t
-                                        :strike-through t))
-               )))
+         (width (- (window-width) 1))
+         (update (format-time-string " Update %H:%M "))
+         (line (concat
+                (propertize "\n" 'face `(:foreground ,(face-background 'default)
+                                         :extend t
+                                         :strike-through t))
+                (propertize (make-string (/ (- width (length update) 3) 2) ? )
+                            'face '(:inherit mastodon-alt-tl-update-face
+                                    :strike-through t))
+                (propertize update
+                            'face '(:inherit mastodon-alt-tl-update-face
+                                    :inverse-video t
+                                    :strike-through nil))
+                (propertize "\n"
+                            'face '(:inherit mastodon-alt-tl-update-face
+                                    :strike-through t))
+                (propertize "\n" 'face `(:foreground ,(face-background 'default)
+                                         :extend t
+                                         :strike-through t)))))
     (overlay-put overlay 'mastodon-alt-update t)
     (overlay-put overlay 'display line)))
 
@@ -500,27 +499,27 @@ reblogged toots are returned."
            (replies (format "%s %s" replies-count (mastodon-tl--symbol 'reply)))
            (bookmark (format "%s" (mastodon-tl--symbol 'bookmark)))
            (bookmarked (equal 't (alist-get 'bookmarked toot)))
-           (status (concat 
-                (propertize favourites
-                            'favourited-p favourited
-                            'favourites-field t
-                            'favourites-count favourites-count
-                            'face (mastodon-alt-tl--status-face favourited favourites-count))
-                (propertize " | " 'face (alist-get 'default mastodon-alt-tl-status-faces))
-                (propertize boosts
-                            'boosted-p boosted
-                            'boosts-field t
-                            'boosts-count boosts-count
-                            'face (mastodon-alt-tl--status-face boosted boosts-count))
-                (propertize " | " 'face (alist-get 'default mastodon-alt-tl-status-faces))
-                (propertize replies
-                            'replies-field t
-                            'replies-count replies-count
-                            'face (mastodon-alt-tl--status-face nil replies-count))
-                (propertize " | " 'face (alist-get 'default mastodon-alt-tl-status-faces))
-                (propertize bookmark
-                            'bookmark-field t
-                            'face (mastodon-alt-tl--status-face bookmarked 0))))
+           (status (concat
+                    (propertize favourites
+                                'favourited-p favourited
+                                'favourites-field t
+                                'favourites-count favourites-count
+                                'face (mastodon-alt-tl--status-face favourited favourites-count))
+                    (propertize " | " 'face (alist-get 'default mastodon-alt-tl-status-faces))
+                    (propertize boosts
+                                'boosted-p boosted
+                                'boosts-field t
+                                'boosts-count boosts-count
+                                'face (mastodon-alt-tl--status-face boosted boosts-count))
+                    (propertize " | " 'face (alist-get 'default mastodon-alt-tl-status-faces))
+                    (propertize replies
+                                'replies-field t
+                                'replies-count replies-count
+                                'face (mastodon-alt-tl--status-face nil replies-count))
+                    (propertize " | " 'face (alist-get 'default mastodon-alt-tl-status-faces))
+                    (propertize bookmark
+                                'bookmark-field t
+                                'face (mastodon-alt-tl--status-face bookmarked 0))))
            (status (concat
                     (propertize " " 'display `(space :align-to (- right ,(+ (length status) 2))))
                     status)))
@@ -678,8 +677,8 @@ DETAILED-P are the same as the original wrapped function
       'parent-toot  parent-toot)
      "\n")
 
-  (when mastodon-tl--display-media-p
-    (mastodon-media--inline-images beg (point)))))
+    (when mastodon-tl--display-media-p
+      (mastodon-media--inline-images beg (point)))))
 
 (defun mastodon-alt-tl--byline-boosted (_orig-fun toot)
   "Add byline for boosted data from TOOT."
