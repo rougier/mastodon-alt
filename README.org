@@ -1,0 +1,11 @@
+
+* Mastodon-alt
+
+This provides an alternative layout for the mastodon client. Usage is quite simple:
+
+#+begin_src emacs-lisp
+(require 'mastodon-alt)
+(mastodon-alt-tl-activate)
+#+end_src
+
+[[file:mastodon-alt.png]]
