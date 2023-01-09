@@ -165,10 +165,8 @@ display property to show the short url."
              (props (text-properties-at (match-beginning 0)))
              (url (save-match-data
                     (url-generic-parse-url match)))
-             (type (url-type url))
              (host (url-host url))
              (file (url-filename url))
-             (ext (file-name-extension file))
              (ext (save-match-data
                     (when (file-name-extension file)
                       (car (split-string (file-name-extension file) "?")))))
@@ -704,24 +702,13 @@ By default it is `mastodon-tl--byline-boosted'.
 
 DETAILED-P means display more detailed info. For now
 this just means displaying toot client."
-  (let* ((created-time
-          ;; bosts and faves in notifs view
-          ;; (makes timestamps be for the original toot
-          ;; not the boost/fave):
-          (or (mastodon-tl--field 'created_at
-                                  (mastodon-tl--field 'status toot))
-              ;; all other toots, inc. boosts/faves in timelines:
-              ;; (mastodon-tl--field auto fetches from reblogs if needed):
-              (mastodon-tl--field 'created_at toot)))
-         (parsed-time (date-to-time created-time))
-         (faved (equal 't (mastodon-tl--field 'favourited toot)))
+  (let* ((faved (equal 't (mastodon-tl--field 'favourited toot)))
          (boosted (equal 't (mastodon-tl--field 'reblogged toot)))
          (bookmarked (equal 't (mastodon-tl--field 'bookmarked toot)))
          (visibility (mastodon-tl--field 'visibility toot))
          (account (alist-get 'account toot))
          (avatar-url (alist-get 'avatar account))
-         (edited-time (alist-get 'edited_at toot))
-         (edited-parsed (when edited-time (date-to-time edited-time))))
+         (edited-time (alist-get 'edited_at toot)))
     (concat
      (when (and mastodon-tl--show-avatars
                 mastodon-tl--display-media-p
