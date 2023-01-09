@@ -375,8 +375,8 @@ If no TOOT is given, the one at point is considered."
          (type (alist-get 'type (or toot))))
     (unless (member type '("follow" "follow_request"))
       toot)))
-        
-  
+
+
 (defun mastodon-alt-tl--bounds (property)
   "Get the bounds of the specified PROPERTY for the toot at point."
 
@@ -401,7 +401,7 @@ If no TOOT is given, the one at point is considered."
 
           (mastodon-toot--action (if boosted-p "reblog" "unreblog")
                                  (lambda ()))
-         
+
           (add-text-properties (car bounds) (cdr bounds)
                `(boosted-p ,boosted-p
                  face ,(mastodon-alt-tl--status-face boosted-p count)))))))
@@ -462,7 +462,7 @@ This advisizes ORIG-FUN `mastodon-tl--more' and applies ARGS."
             (mastodon-tl--update)
             (goto-char (+ (point-min) 1)))
         (goto-char (- prev 1))))
-  
+
     (let ((prev (previous-single-property-change (point) property)))
       (if (not prev)
           (goto-char (+ (point-min) 1))
@@ -537,7 +537,7 @@ applies TIMESTAMP and CURRENT-TIME."
          (result (cons (replace-regexp-in-string "minutes" "mins" (car result))
                        (cdr result))))
     (cons (format "%12s" (car result)) (cdr result))))
-  
+
 (defun mastodon-alt-tl--toot-timestamp (toot)
   "Return a right aligned (using display align-to) string with TOOT timestamp."
 
@@ -629,7 +629,7 @@ applies TIMESTAMP and CURRENT-TIME."
                     content)))
     (cond ((eq 0 (length content))
            "")
-          
+
           ((mastodon-tl--has-spoiler toot)
            (concat
             (mastodon-alt-tl--folding-box content
@@ -683,7 +683,7 @@ DETAILED-P are the same as the original wrapped function
 
 (defun mastodon-alt-tl--byline-boosted (_orig-fun toot)
   "Add byline for boosted data from TOOT."
-  
+
   (let ((reblog (alist-get 'reblog toot)))
     (when reblog
       (concat
@@ -825,7 +825,7 @@ bigger preview when mouse hovers it."
       (progn
         (plist-put (cdr thumbnail) :file image-file)
         (plist-put (cdr preview) :file image-file)))
-    
+
     (if (> image-width image-height)
         (progn
           (plist-put (cdr thumbnail) :height thumbnail-height)
@@ -835,8 +835,8 @@ bigger preview when mouse hovers it."
         (plist-put (cdr thumbnail) :width thumbnail-width)
         (plist-put (cdr preview) :width nil)
         (plist-put (cdr preview) :height 512)))
-            
-    (put-text-property start end 'display 
+
+    (put-text-property start end 'display
                        (list (list 'slice 0 0 thumbnail-width thumbnail-height) thumbnail))
     (put-text-property start end 'face '(:box t))
     (put-text-property start end 'mouse-face '(:box t))
@@ -896,7 +896,7 @@ bigger preview when mouse hovers it."
                     #'mastodon-alt-toot--toggle-boost))
     (progn
       (remove-hook 'mastodon-mode-hook #'mastodon-alt-setup)
-      
+
       (advice-remove 'mastodon-media--process-image-response
                      #'mastodon-alt-media--process-image-response)
       (advice-remove 'mastodon-tl--toggle-spoiler-text-in-toot
@@ -938,7 +938,7 @@ bigger preview when mouse hovers it."
 
   (interactive)
   (mastodon-alt-tl nil))
-    
+
 
 (provide 'mastodon-alt)
 ;;; mastodon-alt.el ends here
