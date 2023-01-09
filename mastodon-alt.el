@@ -43,7 +43,7 @@
 (require 'mastodon-media)
 
 (defgroup mastodon-alt-tl nil
-  "Setting for alternative timelines"
+  "Setting group for mastodon alternative timeline."
   :group 'mastodon)
 
 (defface mastodon-alt-tl-separator-face
@@ -67,13 +67,14 @@
   '((default . font-lock-comment-face)
     (active  . font-lock-comment-face)
     (user    . bold))
-  "Faces for status depending on their value. Default is for when
- count is 0, active is for when count is greater than zero and
- user is for when user has favourited, boosted or bookmarked the
- toot."
+  "Faces for status depending on their value.
+
+ Default is for when count is 0, active is for when count is
+ greater than zero and user is for when user has favourited,
+ boosted or bookmarked the toot."
   :group 'mastodon-alt-tl
   :type '(alist :key-type
-         symbol :value-type face))
+          symbol :value-type face))
 
 (defface mastodon-alt-tl-actions-face
   `((t :inherit font-lock-comment-face))
@@ -97,12 +98,12 @@
   :group 'mastodon-alt-tl)
 
 (defcustom mastodon-alt-tl-show-status t
-  "Whether to show toot status"
+  "Whether to show toot status."
   :type 'bool
   :group 'mastodon-alt-tl)
 
 (defcustom mastodon-alt-tl-show-actions t
-  "Whether to show toot related actions"
+  "Whether to show toot related actions."
   :type 'bool
   :group 'mastodon-alt-tl)
 
@@ -123,8 +124,9 @@
   :group 'mastodon-alt-tl)
 
 (defcustom mastodon-alt-tl-box-width -2
-  "Width of the box for boosted toots (a negative value width means-
-window-width - width"
+  "Width of the box for boosted toots.
+
+A negative value width means `window-width - width'"
   :type 'number
   :group 'mastodon-alt-tl)
 
@@ -133,16 +135,20 @@ window-width - width"
   :type 'string
   :group 'mastodon-alt-tl)
 
-(defun mastodon-alt-tl--shorten-url-format (host name ext)
-  "Format a shorten url using HOST, NAME and EXT"
-  
+(defun mastodon-alt-tl--shorten-url-format (host _name ext)
+  "Format a shorten url using HOST and EXT.
+
+NAME is unused."
+
   (if (stringp ext)
       (format "[%s (%s)]" host ext)
     (format "[%s]" host)))
 
 (defun mastodon-alt-tl--shorten-url (string &optional display)
-   "Shorten all urls in STRING. If DISPLAY is t, the returned string is
- propertized and uses the display property to show the short url."
+  "Shorten all urls in STRING.
+
+If DISPLAY is t, the returned string is propertized and uses the
+display property to show the short url."
 
    (with-temp-buffer
      (insert string)
@@ -178,8 +184,9 @@ window-width - width"
      (buffer-substring (point-min) (point-max))))
 
 (defun mastodon-alt-tl--folding-box (content &optional size title folded prefix style)
-  "Enclose TEXT with a box of given STYLE and SIZE with an optional TITLE at
-the top.
+  "Enclose CONTENT text with a box of given STYLE and SIZE.
+
+If TITLE is given, then place the optional TITLE at the top.
 
 If a PREFIX is given, it is prepended to the box such that total
 size is enforced, including prefix. If a title is given, the
@@ -294,8 +301,8 @@ can be either 'unicode, 'ascii or 'unicode-x with x in [1,7]."
          (concat header (or title "")  body footer)))
 
 (defun mastodon-alt-tl--folding-box-toggle ()
-  "Fold / unfold a folding box"
-  
+  "Fold / unfold a folding box."
+
   (interactive)
   (let ((inhibit-read-only t)
         (body-size (get-text-property (point) 'body-size)))
@@ -307,7 +314,7 @@ can be either 'unicode, 'ascii or 'unicode-x with x in [1,7]."
                                `(invisible ,invisible)))))))
 
 
-(defun mastodon-alt-tl--toggle-spoiler-text-in-toot (&orig-fun)
+(defun mastodon-alt-tl--toggle-spoiler-text-in-toot (_orig-fun)
   "Toggle the visibility of the spoiler text in the current toot."
   (interactive)
   (let ((bounds (mastodon-alt-tl--bounds 'body-size)))
@@ -318,8 +325,9 @@ can be either 'unicode, 'ascii or 'unicode-x with x in [1,7]."
 
 
 (defun mastodon-alt-tl--mark-update ()
-  "Add a mark update at the top of a timeline, this should be ran just
-before an update."
+  "Add a mark update at the top of a timeline.
+
+This should be ran just before an update."
 
   (remove-overlays (point-min) (point-max) 'mastodon-alt-update t)
   (let* ((overlay (make-overlay (point-min) (+ (point-min) 1) nil t))
@@ -347,15 +355,16 @@ before an update."
     (overlay-put overlay 'display line)))
 
 (defun mastodon-alt-tl--status-face (user count)
-  "Return a status face depending on user and count."
+  "Return a status face depending on USER and COUNT."
 
   (cond (user        (alist-get 'user    mastodon-alt-tl-status-faces))
         ((> count 0) (alist-get 'active  mastodon-alt-tl-status-faces))
         (t           (alist-get 'default mastodon-alt-tl-status-faces))))
 
 (defun mastodon-alt-tl--status-toot (&optional toot)
-  "Return the toot on which we want to extract status. If no toot is
-given, the one at point is considered."
+  "Return the TOOT on which we want to extract status.
+
+If no TOOT is given, the one at point is considered."
 
   (let* ((original-toot (or toot (get-text-property (point) 'toot-json)))
          (toot (or (alist-get 'status original-toot)
@@ -369,8 +378,8 @@ given, the one at point is considered."
         
   
 (defun mastodon-alt-tl--bounds (property)
-  "Get the bounds of the specified property for the toot at point."
-  
+  "Get the bounds of the specified PROPERTY for the toot at point."
+
   (save-excursion
     (let ((toot-id (get-char-property (point) 'toot-id)))
       (beginning-of-line)
@@ -381,8 +390,8 @@ given, the one at point is considered."
 
 ;; We could add +1/-1 to the count and use the display property to
 ;; show a count including our own
-(defun mastodon-alt-toot--toggle-boost (orig-fun)
-  "Toggle boosted status for the toot at point"
+(defun mastodon-alt-toot--toggle-boost (_orig-fun)
+  "Toggle boosted status for the toot at point."
 
     (when-let* ((inhibit-read-only t)
                 (toot (mastodon-alt-tl--status-toot)))
@@ -399,8 +408,8 @@ given, the one at point is considered."
 
 ;; We could add +1/-1 to the count and use the display property to
 ;; show a count including our onw
-(defun mastodon-alt-toot--toggle-favourite (orig-fun)
-  "Toggle boosted status for the toot at point"
+(defun mastodon-alt-toot--toggle-favourite (_orig-fun)
+  "Toggle boosted status for the toot at point."
 
   (when-let* ((inhibit-read-only t)
               (toot (mastodon-alt-tl--status-toot)))
@@ -413,8 +422,8 @@ given, the one at point is considered."
              `(favourited-p ,favourited-p
                             face ,(mastodon-alt-tl--status-face favourited-p count)))))))
 
-(defun mastodon-alt-toot--bookmark-toot-toggle (orig-fun)
-  "Toggle bookmark for the toot at point"
+(defun mastodon-alt-toot--bookmark-toot-toggle (_orig-fun)
+  "Toggle bookmark for the toot at point."
 
     (when-let* ((inhibit-read-only t)
                 (toot (mastodon-alt-tl--status-toot)))
@@ -427,18 +436,22 @@ given, the one at point is considered."
                  face ,(mastodon-alt-tl--status-face bookmarked-p 0)))))))
 
 (defun mastodon-alt-tl--update (orig-fun &rest args)
-  "Advice to insert a mark update before getting more toots."
+  "Advice to insert a mark update before getting more toots.
+
+This advisizes ORIG-FUN `mastodon-tl--update' and applies ARGS."
   (save-excursion
     (mastodon-alt-tl--mark-update)
     (apply orig-fun args)))
 
 (defun mastodon-alt-tl--more (orig-fun &rest args)
-  "Advice to insert a mark update before getting more toots."
+  "Advice to insert a mark update before getting more toots.
+
+This advisizes ORIG-FUN `mastodon-tl--more' and applies ARGS."
   (save-excursion
     (mastodon-alt-tl--mark-update)
     (apply orig-fun args)))
 
-(defun mastodon-alt-tl--goto-prev-toot (orig-fun &rest args)
+(defun mastodon-alt-tl--goto-prev-toot (_orig-fun &rest _args)
   "Jump to previous toot header."
   (interactive)
 
@@ -455,7 +468,7 @@ given, the one at point is considered."
           (goto-char (+ (point-min) 1))
         (goto-char (+ prev 1))))))
 
-(defun mastodon-alt-tl--goto-next-toot (orig-fun &rest args)
+(defun mastodon-alt-tl--goto-next-toot (_orig-fun &rest _args)
   "Jump to next toot header."
   (interactive)
 
@@ -469,11 +482,12 @@ given, the one at point is considered."
 
 
 (defun mastodon-alt-tl--toot-status (toot)
-  "Return a right aligned string (using display align-to) with toot
- statistics (boosts, favs, replies and bookmark). When the toot
- is a reblog (boost), statistics from reblogged toots are
- returned."
-  
+  "Return a right aligned string (using display align-to).
+
+String is filled with TOOT statistics (boosts, favs, replies and
+bookmark). When the TOOT is a reblog (boost), statistics from
+reblogged toots are returned."
+
   (interactive)
   (when-let* ((toot (mastodon-alt-tl--status-toot toot)))
     (let* ((favourites-count (alist-get 'favourites_count toot))
@@ -514,17 +528,19 @@ given, the one at point is considered."
 
 
 (defun mastodon-alt-tl--relative-time-details (orig-fun timestamp &optional current-time)
-  "Advice to make sure relative time is 12 characters long"
-  
+  "Advice to make sure relative time is 12 characters long.
+
+This advisizes ORIG-FUN `mastodon-tl--relative-time-details' and
+applies TIMESTAMP and CURRENT-TIME."
+
   (let* ((result (apply orig-fun timestamp current-time))
          (result (cons (replace-regexp-in-string "minutes" "mins" (car result))
                        (cdr result))))
     (cons (format "%12s" (car result)) (cdr result))))
   
 (defun mastodon-alt-tl--toot-timestamp (toot)
-  "Return a right aligned string (using display align-to) with
-toot timestamp"
-  
+  "Return a right aligned (using display align-to) string with TOOT timestamp."
+
   (let* ((created-time (or (mastodon-tl--field 'created_at
                                                (mastodon-tl--field 'status toot))
                            (mastodon-tl--field 'created_at toot)))
@@ -547,8 +563,8 @@ toot timestamp"
                           'face 'mastodon-alt-tl-timestamp-face
                           'timestamp parsed-time)))))
 
-(defun mastodon-alt-tl--toot-actions (toot)
-  "Return a string with toot actions"
+(defun mastodon-alt-tl--toot-actions (_toot)
+  "Return a string with TOOT actions."
 
   (if mastodon-alt-tl-show-actions
       (concat " "
@@ -596,14 +612,14 @@ toot timestamp"
                           'help-echo "Click to mute user"))
     ""))
 
-(defun mastodon-alt-tl--toot-separator (toot)
-  "Return a separator string"
+(defun mastodon-alt-tl--toot-separator (_toot)
+  "Return a separator string."
 
    (propertize "\n" 'face 'mastodon-alt-tl-separator-face
                     'toot-start t))
 
 (defun mastodon-alt-tl--toot-content (toot)
-  "Return a string with toot content"
+  "Return a string with TOOT content."
 
   (let* ((reblog  (alist-get 'reblog toot))
          (content (mastodon-tl--content toot))
@@ -638,10 +654,14 @@ toot timestamp"
             (string-fill content (min (- (window-width) 2) fill-column))
            "\n\n")))))
 
-(defun mastodon-alt-tl--insert-status (orig-fun toot body author-byline action-byline
-                                                &optional id parent-toot detailed-p)
-  "Advice that replace the instertion of a toot with byline first"
-  
+(defun mastodon-alt-tl--insert-status (_orig-fun toot _body author-byline action-byline
+                                                 &optional id parent-toot detailed-p)
+  "Advice to replace the insertion of a TOOT with byline first.
+
+The arguments AUTHOR-BYLINE, ACTION-BYLINE, ID, PARENT-TOOT, and
+DETAILED-P are the same as the original wrapped function
+`mastodon-tl--insert-status'."
+
   (let ((beg (point)))
     (insert
      (propertize
@@ -661,7 +681,7 @@ toot timestamp"
   (when mastodon-tl--display-media-p
     (mastodon-media--inline-images beg (point)))))
 
-(defun mastodon-alt-tl--byline-boosted (orig-fun toot)
+(defun mastodon-alt-tl--byline-boosted (_orig-fun toot)
   "Add byline for boosted data from TOOT."
   
   (let ((reblog (alist-get 'reblog toot)))
@@ -673,7 +693,8 @@ toot timestamp"
        (mastodon-tl--byline-author reblog)))))
 
 
-(defun mastodon-alt-tl--byline (orig-fun toot author-byline action-byline &optional detailed-p)
+(defun mastodon-alt-tl--byline (_orig-fun toot author-byline action-byline
+                                          &optional _detailed-p)
   "Generate byline for TOOT.
 
 AUTHOR-BYLINE is a function for adding the author portion of
@@ -733,7 +754,7 @@ this just means displaying toot client."
 
 ;; Advice to use our thumbnail making code
 (defun  mastodon-alt-media--process-image-response
-    (orig-fun status-plist marker image-options region-length url)
+    (_orig-fun status-plist marker image-options region-length url)
   "Callback function processing the url retrieve response for URL.
 
 STATUS-PLIST is the usual plist of status events as per `url-retrieve'.
@@ -776,9 +797,10 @@ with the image."
 
 
 (defun mastodon-alt-tl--thumbnail (start end image)
-  "Make a thumbnail of an IMAGE and make the region going from
-start to end to display it and show a bigger preview when mouse
-hovers it."
+  "Make a thumbnail of an IMAGE.
+
+Make the region going from START to END to display it and show a
+bigger preview when mouse hovers it."
 
   (let* ((char-height (frame-char-height))
          (char-width (frame-char-width))
@@ -821,7 +843,7 @@ hovers it."
     (put-text-property start end 'help-echo (propertize " " 'display preview))))
 
 
-(defun mastodon-alt-profile--insert-statuses-pinned (orig-fun pinned-statuses)
+(defun mastodon-alt-profile--insert-statuses-pinned (_orig-fun pinned-statuses)
   "Insert each of the PINNED-STATUSES for a given account."
   (mapc (lambda (pinned-status)
           (insert (format "%s " (mastodon-tl--symbol 'pinned)))
@@ -830,17 +852,16 @@ hovers it."
 
 
 (defun mastodon-alt-setup ()
-  "Some buffer local settings"
-  
+  "Some buffer local settings."
+
   (tooltip-mode 1)
   (setq tooltip-delay 0)
   (setq tooltip-hide-delay 60))
 
 
 (defun mastodon-alt-tl (state)
-  "Activate or deactivate the alternative timeline layout depeding
-on STATE"
-  
+  "Activate or deactivate the alternative timeline layout depending on STATE."
+
   (if state
       (progn
         (add-hook 'mastodon-mode-hook #'mastodon-alt-setup)
@@ -907,14 +928,14 @@ on STATE"
 
 
 (defun mastodon-alt-tl-activate ()
-  "Activate alternative timeline layout (experimental)"
-  
+  "Activate alternative timeline layout (experimental)."
+
   (interactive)
   (mastodon-alt-tl t))
 
 (defun mastodon-alt-tl-deactivate ()
-  "Deactivate alternative timeline layout (experimental)"
-  
+  "Deactivate alternative timeline layout (experimental)."
+
   (interactive)
   (mastodon-alt-tl nil))
     
