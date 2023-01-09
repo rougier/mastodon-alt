@@ -5,7 +5,7 @@
 ;; Author: Nicolas P. Rougier <Nicolas.Rougier@inria.fr>
 ;; Maintainer: Nicolas P. Rougier <Nicolas.Rougier@inria.fr>
 ;; SPDX-License-Identifier: GPL-3.0-or-later
-;; Created: Janurary 9, 2023
+;; Created: January 9, 2023
 ;; Version: 0.0.1
 ;; Homepage: https://github.com/rougier/mastodon-alt
 ;; Package-Requires: ((emacs "28.1") (mastodon "1.0.0"))
@@ -33,7 +33,7 @@
 ;;  - When name + handle combination is too long, date will continue
 ;;    on next line
 ;;  - When the toot is boosted or favorited, this mess up with prev/next.
-;;    Problem dissapear if the timeline is reloaded.
+;;    Problem disappear if the timeline is reloaded.
 ;;    -> mastodon-toot--action needs to be modified such as to add the
 ;;       'toot-base-id' (that is used to identify toots region)
 
@@ -700,7 +700,7 @@ DETAILED-P are the same as the original wrapped function
 AUTHOR-BYLINE is a function for adding the author portion of
 the byline that takes one variable.
 ACTION-BYLINE is a function for adding an action, such as boosting,
-favouriting and following to the byline. It also takes a single function.
+favoriting and following to the byline. It also takes a single function.
 By default it is `mastodon-tl--byline-boosted'.
 
 DETAILED-P means display more detailed info. For now
