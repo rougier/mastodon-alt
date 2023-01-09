@@ -913,12 +913,14 @@ bigger preview when mouse hovers it."
                      #'mastodon-alt-toot--toggle-boost))))
 
 
+;;;###autoload
 (defun mastodon-alt-tl-activate ()
   "Activate alternative timeline layout (experimental)."
 
   (interactive)
   (mastodon-alt-tl t))
 
+;;;###autoload
 (defun mastodon-alt-tl-deactivate ()
   "Deactivate alternative timeline layout (experimental)."
 
