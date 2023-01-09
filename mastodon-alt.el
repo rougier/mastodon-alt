@@ -920,4 +920,4 @@ on STATE"
     
 
 (provide 'mastodon-alt)
-;;; mastodon-alt-tl.el ends here
+;;; mastodon-alt.el ends here
