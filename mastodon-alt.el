@@ -2,6 +2,14 @@
 
 ;; Copyright (C) 2023 Nicolas P. Rougier
 
+;; Author: Nicolas P. Rougier <Nicolas.Rougier@inria.fr>
+;; Maintainer: Nicolas P. Rougier <Nicolas.Rougier@inria.fr>
+;; SPDX-License-Identifier: GPL-3.0-or-later
+;; Created: Janurary 9, 2023
+;; Version: 0.0.1
+;; Homepage: https://github.com/rougier/mastodon-alt
+;; Package-Requires: ((emacs "28.1") (mastodon "1.0.0"))
+
 ;; This file is not part of GNU Emacs.
 
 ;; This file is free software; you can redistribute it and/or modify
