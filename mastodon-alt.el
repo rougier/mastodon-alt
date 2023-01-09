@@ -1,4 +1,4 @@
-;;; mastodon-alt-tl.el --- Mastodon alternative timeline -*- lexical-binding: t -*-
+;;; mastodon-alt.el --- Mastodon alternative timeline -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2023 Nicolas P. Rougier
 
@@ -911,5 +911,5 @@ on STATE"
   (mastodon-alt-tl nil))
     
 
-(provide 'mastodon-alt-tl)
+(provide 'mastodon-alt)
 ;;; mastodon-alt-tl.el ends here
