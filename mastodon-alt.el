@@ -193,6 +193,7 @@ and initial state is specified with FOLDED. The type of the box
 can be either 'unicode, 'ascii or 'unicode-x with x in [1,7]."
 
   (let* ((prefix (or prefix ""))
+         (tl-box-fg (face-attribute 'mastodon-alt-tl-box-face :foreground nil t))
          (styles `((unicode   . ,(propertize "│┌─┐└─┘│" 'face 'mastodon-alt-tl-box-face))
                    (unicode-1 . ,(propertize "│┌─┐└─┘│" 'face 'mastodon-alt-tl-box-face))
                    (unicode-2 . ,(propertize "┃┏━┓┗━┛┃" 'face 'mastodon-alt-tl-box-face))
@@ -203,8 +204,8 @@ can be either 'unicode, 'ascii or 'unicode-x with x in [1,7]."
                    (unicode-7 . ,(propertize "║╓  ╙   " 'face 'mastodon-alt-tl-box-face))
                    (ascii     . ,(propertize "|+-++-+|" 'face 'mastodon-alt-tl-box-face))
                    (tight     . ,(concat
-                                  (propertize " " 'face '(:height .1
-                                                          :background "black"))
+                                  (propertize " " 'face `(:height .1
+                                                          :background ,tl-box-fg))
                                   (propertize " " 'face '(:underline t))
                                   (propertize " " 'face '(:underline t))
                                   (propertize " " 'face '(:height .1
@@ -213,8 +214,8 @@ can be either 'unicode, 'ascii or 'unicode-x with x in [1,7]."
                                   (propertize " " 'face '(:overline t))
                                   (propertize " " 'face '(:height .1
                                                           :overline t))
-                                  (propertize " " 'face '(:height .1
-                                                          :background "black"))))))
+                                  (propertize " " 'face `(:height .1
+                                                          :background ,tl-box-fg))))))
          (style (or style 'tight))
          (style (if (alist-get style styles)
                     style
