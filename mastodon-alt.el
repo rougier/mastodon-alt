@@ -152,7 +152,7 @@ display property to show the short url."
 
   (with-temp-buffer
     (insert string)
-     
+
     ;; WARNING: We get rid of display properties because it messes
     ;;          everything We could probably be less radical but
     ;;          it'll do for the time being.
@@ -485,7 +485,6 @@ String is filled with TOOT statistics (boosts, favs, replies and
 bookmark). When the TOOT is a reblog (boost), statistics from
 reblogged toots are returned."
 
-  (interactive)
   (when-let* ((toot (mastodon-alt-tl--status-toot toot)))
     (let* ((favourites-count (alist-get 'favourites_count toot))
            (favourited (equal 't (alist-get 'favourited toot)))
