@@ -669,7 +669,13 @@ DETAILED-P are the same as the original wrapped function
       (concat
        (mastodon-alt-tl--toot-separator toot)
        (mastodon-tl--byline toot author-byline action-byline detailed-p)
-       "\n"
+       ;; Add linebreak if reblogged (to work with
+       ;; `mastodon-alt-tl--byline-boosted'), if not showing avatars,
+       ;; or if the image is short enough.
+       (when (or (alist-get 'reblog toot)
+                 (not mastodon-tl--show-avatars)
+                 (< mastodon-media--avatar-height (frame-char-height)))
+         "\n")
        (mastodon-alt-tl--toot-content toot)
        (mastodon-alt-tl--toot-actions toot)
        (mastodon-alt-tl--toot-status toot))
@@ -780,7 +786,11 @@ with the image."
                     ;; We only set the image to display if we could load
                     ;; it; we already have set a default image when we
                     ;; added the tag.
-                    (mastodon-alt-tl--thumbnail marker (+ marker region-length) image))
+                    (if (eq (plist-get image-options :height)
+                            mastodon-media--avatar-height)
+                        (put-text-property marker (+ marker region-length)
+                                           'display image)
+                      (mastodon-alt-tl--thumbnail marker (+ marker region-length) image)))
                   ;; We are done with the marker; release it:
                   (set-marker marker nil)))
               (kill-buffer url-buffer)))))))
