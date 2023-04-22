@@ -674,6 +674,7 @@ DETAILED-P are the same as the original wrapped function
        ;; or if the image is short enough.
        (when (or (alist-get 'reblog toot)
                  (not mastodon-tl--show-avatars)
+                 (mastodon-tl--has-spoiler toot)
                  (< mastodon-media--avatar-height (frame-char-height)))
          "\n")
        (mastodon-alt-tl--toot-content toot)
