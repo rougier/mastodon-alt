@@ -652,7 +652,7 @@ applies TIMESTAMP and CURRENT-TIME."
            "\n\n")))))
 
 (defun mastodon-alt-tl--insert-status (_orig-fun toot _body author-byline action-byline
-                                                 &optional id parent-toot detailed-p)
+                                                 &optional id parent-toot detailed-p thread)
   "Advice to replace the insertion of a TOOT with byline first.
 
 The arguments AUTHOR-BYLINE, ACTION-BYLINE, ID, PARENT-TOOT, and
