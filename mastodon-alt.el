@@ -152,7 +152,7 @@ display property to show the short url."
 
   (with-temp-buffer
     (insert string)
-     
+
     ;; WARNING: We get rid of display properties because it messes
     ;;          everything We could probably be less radical but
     ;;          it'll do for the time being.
@@ -193,6 +193,7 @@ and initial state is specified with FOLDED. The type of the box
 can be either 'unicode, 'ascii or 'unicode-x with x in [1,7]."
 
   (let* ((prefix (or prefix ""))
+         (tl-box-fg (face-attribute 'mastodon-alt-tl-box-face :foreground nil t))
          (styles `((unicode   . ,(propertize "│┌─┐└─┘│" 'face 'mastodon-alt-tl-box-face))
                    (unicode-1 . ,(propertize "│┌─┐└─┘│" 'face 'mastodon-alt-tl-box-face))
                    (unicode-2 . ,(propertize "┃┏━┓┗━┛┃" 'face 'mastodon-alt-tl-box-face))
@@ -203,8 +204,8 @@ can be either 'unicode, 'ascii or 'unicode-x with x in [1,7]."
                    (unicode-7 . ,(propertize "║╓  ╙   " 'face 'mastodon-alt-tl-box-face))
                    (ascii     . ,(propertize "|+-++-+|" 'face 'mastodon-alt-tl-box-face))
                    (tight     . ,(concat
-                                  (propertize " " 'face '(:height .1
-                                                          :background "black"))
+                                  (propertize " " 'face `(:height .1
+                                                          :background ,tl-box-fg))
                                   (propertize " " 'face '(:underline t))
                                   (propertize " " 'face '(:underline t))
                                   (propertize " " 'face '(:height .1
@@ -213,8 +214,8 @@ can be either 'unicode, 'ascii or 'unicode-x with x in [1,7]."
                                   (propertize " " 'face '(:overline t))
                                   (propertize " " 'face '(:height .1
                                                           :overline t))
-                                  (propertize " " 'face '(:height .1
-                                                          :background "black"))))))
+                                  (propertize " " 'face `(:height .1
+                                                          :background ,tl-box-fg))))))
          (style (or style 'tight))
          (style (if (alist-get style styles)
                     style
@@ -483,45 +484,48 @@ This advisizes ORIG-FUN `mastodon-tl--more' and applies ARGS."
 
 String is filled with TOOT statistics (boosts, favs, replies and
 bookmark). When the TOOT is a reblog (boost), statistics from
-reblogged toots are returned."
+reblogged toots are returned.
 
-  (interactive)
-  (when-let* ((toot (mastodon-alt-tl--status-toot toot)))
-    (let* ((favourites-count (alist-get 'favourites_count toot))
-           (favourited (equal 't (alist-get 'favourited toot)))
-           (boosts-count (alist-get 'reblogs_count toot))
-           (boosted (equal 't (alist-get 'reblogged toot)))
-           (replies-count (alist-get 'replies_count toot))
-           (favourites (format "%s %s" favourites-count (mastodon-tl--symbol 'favourite)))
-           (boosts (format "%s %s" boosts-count (mastodon-tl--symbol 'boost)))
-           (replies (format "%s %s" replies-count (mastodon-tl--symbol 'reply)))
-           (bookmark (format "%s" (mastodon-tl--symbol 'bookmark)))
-           (bookmarked (equal 't (alist-get 'bookmarked toot)))
-           (status (concat
-                    (propertize favourites
-                                'favourited-p favourited
-                                'favourites-field t
-                                'favourites-count favourites-count
-                                'face (mastodon-alt-tl--status-face favourited favourites-count))
-                    (propertize " | " 'face (alist-get 'default mastodon-alt-tl-status-faces))
-                    (propertize boosts
-                                'boosted-p boosted
-                                'boosts-field t
-                                'boosts-count boosts-count
-                                'face (mastodon-alt-tl--status-face boosted boosts-count))
-                    (propertize " | " 'face (alist-get 'default mastodon-alt-tl-status-faces))
-                    (propertize replies
-                                'replies-field t
-                                'replies-count replies-count
-                                'face (mastodon-alt-tl--status-face nil replies-count))
-                    (propertize " | " 'face (alist-get 'default mastodon-alt-tl-status-faces))
-                    (propertize bookmark
-                                'bookmark-field t
-                                'face (mastodon-alt-tl--status-face bookmarked 0))))
-           (status (concat
-                    (propertize " " 'display `(space :align-to (- right ,(+ (length status) 2))))
-                    status)))
-      status)))
+To disable showing the status string at all, customize
+`mastodon-alt-tl-show-status'."
+
+  (when mastodon-alt-tl-show-status
+    (when-let* ((toot (mastodon-alt-tl--status-toot toot)))
+      (let* ((favourites-count (alist-get 'favourites_count toot))
+             (favourited (equal 't (alist-get 'favourited toot)))
+             (boosts-count (alist-get 'reblogs_count toot))
+             (boosted (equal 't (alist-get 'reblogged toot)))
+             (replies-count (alist-get 'replies_count toot))
+             (favourites (format "%s %s" favourites-count (mastodon-tl--symbol 'favourite)))
+             (boosts (format "%s %s" boosts-count (mastodon-tl--symbol 'boost)))
+             (replies (format "%s %s" replies-count (mastodon-tl--symbol 'reply)))
+             (bookmark (format "%s" (mastodon-tl--symbol 'bookmark)))
+             (bookmarked (equal 't (alist-get 'bookmarked toot)))
+             (status (concat
+                      (propertize favourites
+                                  'favourited-p favourited
+                                  'favourites-field t
+                                  'favourites-count favourites-count
+                                  'face (mastodon-alt-tl--status-face favourited favourites-count))
+                      (propertize " | " 'face (alist-get 'default mastodon-alt-tl-status-faces))
+                      (propertize boosts
+                                  'boosted-p boosted
+                                  'boosts-field t
+                                  'boosts-count boosts-count
+                                  'face (mastodon-alt-tl--status-face boosted boosts-count))
+                      (propertize " | " 'face (alist-get 'default mastodon-alt-tl-status-faces))
+                      (propertize replies
+                                  'replies-field t
+                                  'replies-count replies-count
+                                  'face (mastodon-alt-tl--status-face nil replies-count))
+                      (propertize " | " 'face (alist-get 'default mastodon-alt-tl-status-faces))
+                      (propertize bookmark
+                                  'bookmark-field t
+                                  'face (mastodon-alt-tl--status-face bookmarked 0))))
+             (status (concat
+                      (propertize " " 'display `(space :align-to (- right ,(+ (length status) 2))))
+                      status)))
+        status))))
 
 
 (defun mastodon-alt-tl--relative-time-details (orig-fun timestamp &optional current-time)
@@ -665,7 +669,14 @@ DETAILED-P are the same as the original wrapped function
       (concat
        (mastodon-alt-tl--toot-separator toot)
        (mastodon-tl--byline toot author-byline action-byline detailed-p)
-       "\n"
+       ;; Add linebreak if reblogged (to work with
+       ;; `mastodon-alt-tl--byline-boosted'), if not showing avatars,
+       ;; or if the image is short enough.
+       (when (or (alist-get 'reblog toot)
+                 (not mastodon-tl--show-avatars)
+                 (mastodon-tl--has-spoiler toot)
+                 (< mastodon-media--avatar-height (frame-char-height)))
+         "\n")
        (mastodon-alt-tl--toot-content toot)
        (mastodon-alt-tl--toot-actions toot)
        (mastodon-alt-tl--toot-status toot))
@@ -776,7 +787,11 @@ with the image."
                     ;; We only set the image to display if we could load
                     ;; it; we already have set a default image when we
                     ;; added the tag.
-                    (mastodon-alt-tl--thumbnail marker (+ marker region-length) image))
+                    (if (eq (plist-get image-options :height)
+                            mastodon-media--avatar-height)
+                        (put-text-property marker (+ marker region-length)
+                                           'display image)
+                      (mastodon-alt-tl--thumbnail marker (+ marker region-length) image)))
                   ;; We are done with the marker; release it:
                   (set-marker marker nil)))
               (kill-buffer url-buffer)))))))
