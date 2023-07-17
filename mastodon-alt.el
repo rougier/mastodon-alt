@@ -636,7 +636,14 @@ applies TIMESTAMP and CURRENT-TIME."
             (mastodon-alt-tl--folding-box content
                                           mastodon-alt-tl-box-width
                                           (mastodon-tl--field 'spoiler_text toot)
-                                          mastodon-toot--content-warning
+					  (eq :json-false
+						      ;; If something goes wrong reading prefs,
+						      ;; just return nil so CWs show by default.
+						      (condition-case nil
+							  (mastodon-profile--get-preferences-pref
+							   'reading:expand:spoilers)
+							(error nil)))
+                                          ;; mastodon-toot--content-warning
                                           mastodon-alt-tl-box-prefix)
             "\n"))
 
@@ -653,7 +660,7 @@ applies TIMESTAMP and CURRENT-TIME."
            (concat
             "\n"
             (string-fill content (min (- (window-width) 2) fill-column))
-           "\n\n")))))
+            "\n\n")))))
 
 (defun mastodon-alt-tl--insert-status (_orig-fun toot _body author-byline action-byline
                                                  &optional id parent-toot detailed-p thread)
