@@ -8,7 +8,7 @@
 ;; Created: January 9, 2023
 ;; Version: 0.0.1
 ;; Homepage: https://github.com/rougier/mastodon-alt
-;; Package-Requires: ((emacs "28.1") (mastodon "1.0.0"))
+;; Package-Requires: ((emacs "28.1") (mastodon "1.0.13"))
 
 ;; This file is not part of GNU Emacs.
 
@@ -398,7 +398,7 @@ If no TOOT is given, the one at point is considered."
               (count (alist-get 'reblogs_count toot)))
 
           (mastodon-toot--action (if boosted-p "reblog" "unreblog")
-                                 (lambda ()))
+                                 (lambda (arg)))
 
           (add-text-properties (car bounds) (cdr bounds)
                `(boosted-p ,boosted-p
@@ -415,7 +415,7 @@ If no TOOT is given, the one at point is considered."
       (let ((favourited-p (not (get-char-property (car bounds) 'favourited-p)))
             (count (alist-get 'reblogs_count toot)))
         (mastodon-toot--action (if favourited-p "favourite" "unfavourite")
-                               (lambda ()))
+                               (lambda (arg)))
         (add-text-properties (car bounds) (cdr bounds)
              `(favourited-p ,favourited-p
                             face ,(mastodon-alt-tl--status-face favourited-p count)))))))
@@ -428,7 +428,7 @@ If no TOOT is given, the one at point is considered."
       (when-let* ((bounds (mastodon-alt-tl--bounds 'bookmark-field)))
         (let ((bookmarked-p (not (get-char-property (car bounds) 'bookmarked-p))))
           (mastodon-toot--action (if bookmarked-p "bookmark" "unbookmark")
-                                 (lambda ()))
+                                 (lambda (arg)))
           (add-text-properties (car bounds) (cdr bounds)
                `(bookmarked-p ,bookmarked-p
                  face ,(mastodon-alt-tl--status-face bookmarked-p 0)))))))
