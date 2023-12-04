@@ -379,11 +379,11 @@ If no TOOT is given, the one at point is considered."
   "Get the bounds of the specified PROPERTY for the toot at point."
 
   (save-excursion
-    (let ((toot-id (get-char-property (point) 'toot-id)))
+    (let ((item-id (get-char-property (point) 'item-id)))
       (beginning-of-line)
       (when-let* ((beg (next-single-property-change (point) property))
                   (end (next-single-property-change beg property))
-                  (same (eq toot-id (get-char-property beg 'toot-id))))
+                  (same (eq item-id (get-char-property beg 'item-id))))
         (cons beg end)))))
 
 ;; We could add +1/-1 to the count and use the display property to
@@ -449,11 +449,11 @@ This advisizes ORIG-FUN `mastodon-tl--more' and applies ARGS."
     (mastodon-alt-tl--mark-update)
     (apply orig-fun args)))
 
-(defun mastodon-alt-tl--goto-prev-toot (_orig-fun &rest _args)
+(defun mastodon-alt-tl--goto-prev-item (_orig-fun &rest _args)
   "Jump to previous toot header."
   (interactive)
 
-  (let ((property 'toot-id))
+  (let ((property 'item-id))
     (let ((prev (previous-single-property-change (point) property)))
       (if (not prev)
           (progn
@@ -466,11 +466,11 @@ This advisizes ORIG-FUN `mastodon-tl--more' and applies ARGS."
           (goto-char (+ (point-min) 1))
         (goto-char (+ prev 1))))))
 
-(defun mastodon-alt-tl--goto-next-toot (_orig-fun &rest _args)
+(defun mastodon-alt-tl--goto-next-item (_orig-fun &rest _args)
   "Jump to next toot header."
   (interactive)
 
-  (let* ((property 'toot-id)
+  (let* ((property 'item-id)
          (next (next-single-property-change (point) property)))
     (if (or (not next) (> (+ next 2) (point-max)))
         (progn
@@ -687,8 +687,8 @@ DETAILED-P are the same as the original wrapped function
        (mastodon-alt-tl--toot-content toot)
        (mastodon-alt-tl--toot-actions toot)
        (mastodon-alt-tl--toot-status toot))
-      'toot-id      (or id (alist-get 'id toot))
-      'base-toot-id (mastodon-tl--toot-id (or parent-toot toot))
+      'item-id      (or id (alist-get 'id toot))
+      'base-toot-id (mastodon-tl--item-id (or parent-toot toot))
       'toot-json    toot
       'parent-toot  parent-toot)
      "\n")
@@ -884,10 +884,10 @@ bigger preview when mouse hovers it."
                     #'mastodon-alt-tl--update)
         (advice-add 'mastodon-tl--more :around
                     #'mastodon-alt-tl--more)
-        (advice-add 'mastodon-tl--goto-prev-toot :around
-                    #'mastodon-alt-tl--goto-prev-toot)
-        (advice-add 'mastodon-tl--goto-next-toot :around
-                    #'mastodon-alt-tl--goto-next-toot)
+        (advice-add 'mastodon-tl--goto-prev-item :around
+                    #'mastodon-alt-tl--goto-prev-item)
+        (advice-add 'mastodon-tl--goto-next-item :around
+                    #'mastodon-alt-tl--goto-next-item)
         (advice-add 'mastodon-tl--insert-status :around
                     #'mastodon-alt-tl--insert-status)
         (advice-add 'mastodon-tl--byline-boosted :around
