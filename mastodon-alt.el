@@ -8,7 +8,7 @@
 ;; Created: January 9, 2023
 ;; Version: 0.0.1
 ;; Homepage: https://github.com/rougier/mastodon-alt
-;; Package-Requires: ((emacs "28.1") (mastodon "1.0.0"))
+;; Package-Requires: ((emacs "28.1") (mastodon "1.0.13"))
 
 ;; This file is not part of GNU Emacs.
 
