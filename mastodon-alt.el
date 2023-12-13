@@ -94,33 +94,33 @@
 
 (defcustom mastodon-alt-tl-show-separator t
   "Whether to show separation between toots."
-  :type 'bool
+  :type 'boolean
   :group 'mastodon-alt-tl)
 
 (defcustom mastodon-alt-tl-show-status t
   "Whether to show toot status."
-  :type 'bool
+  :type 'boolean
   :group 'mastodon-alt-tl)
 
 (defcustom mastodon-alt-tl-show-actions t
   "Whether to show toot related actions."
-  :type 'bool
+  :type 'boolean
   :group 'mastodon-alt-tl)
 
 (defcustom mastodon-alt-tl-show-timestamp t
   "Whether to show toot timestamp."
-  :type 'bool
+  :type 'boolean
   :group 'mastodon-alt-tl)
 
 
 (defcustom mastodon-alt-tl-shorten-url t
   "Whether to shorten url in toots."
-  :type 'bool
+  :type 'boolean
   :group 'mastodon-alt-tl)
 
 (defcustom mastodon-alt-tl-box-boosted t
   "Whether to enclose boosted toots in a text box."
-  :type 'bool
+  :type 'boolean
   :group 'mastodon-alt-tl)
 
 (defcustom mastodon-alt-tl-box-width -2
@@ -187,10 +187,10 @@ display property to show the short url."
 If TITLE is given, then place the optional TITLE at the top.
 
 If a PREFIX is given, it is prepended to the box such that total
-size is enforced, including prefix. If a title is given, the
+size is enforced, including prefix.  If a title is given, the
 content of the box can be shown/hidden by clicking on the title
-and initial state is specified with FOLDED. The type of the box
-can be either 'unicode, 'ascii or 'unicode-x with x in [1,7]."
+and initial state is specified with FOLDED.  The type of the box
+can be either `unicode', `ascii' or `unicode-x' with x in [1,7]."
 
   (let* ((prefix (or prefix ""))
          (tl-box-fg (face-attribute 'mastodon-alt-tl-box-face :foreground nil t))
@@ -398,7 +398,7 @@ If no TOOT is given, the one at point is considered."
               (count (alist-get 'reblogs_count toot)))
 
           (mastodon-toot--action (if boosted-p "reblog" "unreblog")
-                                 (lambda (arg)))
+                                 (lambda (_arg)))
 
           (add-text-properties (car bounds) (cdr bounds)
                `(boosted-p ,boosted-p
@@ -415,7 +415,7 @@ If no TOOT is given, the one at point is considered."
       (let ((favourited-p (not (get-char-property (car bounds) 'favourited-p)))
             (count (alist-get 'reblogs_count toot)))
         (mastodon-toot--action (if favourited-p "favourite" "unfavourite")
-                               (lambda (arg)))
+                               (lambda (_arg)))
         (add-text-properties (car bounds) (cdr bounds)
              `(favourited-p ,favourited-p
                             face ,(mastodon-alt-tl--status-face favourited-p count)))))))
@@ -428,7 +428,7 @@ If no TOOT is given, the one at point is considered."
       (when-let* ((bounds (mastodon-alt-tl--bounds 'bookmark-field)))
         (let ((bookmarked-p (not (get-char-property (car bounds) 'bookmarked-p))))
           (mastodon-toot--action (if bookmarked-p "bookmark" "unbookmark")
-                                 (lambda (arg)))
+                                 (lambda (_arg)))
           (add-text-properties (car bounds) (cdr bounds)
                `(bookmarked-p ,bookmarked-p
                  face ,(mastodon-alt-tl--status-face bookmarked-p 0)))))))
@@ -483,7 +483,7 @@ This advisizes ORIG-FUN `mastodon-tl--more' and applies ARGS."
   "Return a right aligned string (using display align-to).
 
 String is filled with TOOT statistics (boosts, favs, replies and
-bookmark). When the TOOT is a reblog (boost), statistics from
+bookmark).  When the TOOT is a reblog (boost), statistics from
 reblogged toots are returned.
 
 To disable showing the status string at all, customize
@@ -663,7 +663,7 @@ applies TIMESTAMP and CURRENT-TIME."
             "\n\n")))))
 
 (defun mastodon-alt-tl--insert-status (_orig-fun toot _body author-byline action-byline
-                                                 &optional id parent-toot detailed-p thread)
+                                                 &optional id parent-toot detailed-p _thread)
   "Advice to replace the insertion of a TOOT with byline first.
 
 The arguments AUTHOR-BYLINE, ACTION-BYLINE, ID, PARENT-TOOT, and
@@ -715,10 +715,10 @@ DETAILED-P are the same as the original wrapped function
 AUTHOR-BYLINE is a function for adding the author portion of
 the byline that takes one variable.
 ACTION-BYLINE is a function for adding an action, such as boosting,
-favoriting and following to the byline. It also takes a single function.
+favoriting and following to the byline.  It also takes a single function.
 By default it is `mastodon-tl--byline-boosted'.
 
-DETAILED-P means display more detailed info. For now
+DETAILED-P means display more detailed info.  For now
 this just means displaying toot client."
   (let* ((faved (equal 't (mastodon-tl--field 'favourited toot)))
          (boosted (equal 't (mastodon-tl--field 'reblogged toot)))
@@ -915,10 +915,10 @@ bigger preview when mouse hovers it."
                      #'mastodon-alt-tl--update)
       (advice-remove 'mastodon-tl--more
                      #'mastodon-alt-tl--more)
-      (advice-remove 'mastodon-tl--goto-prev-toot
-                     #'mastodon-alt-tl--goto-prev-toot)
-      (advice-remove 'mastodon-tl--goto-next-toot
-                     #'mastodon-alt-tl--goto-next-toot)
+      (advice-remove 'mastodon-tl--goto-prev-item
+                     #'mastodon-alt-tl--goto-prev-item)
+      (advice-remove 'mastodon-tl--goto-next-item
+                     #'mastodon-alt-tl--goto-next-item)
       (advice-remove 'mastodon-tl--insert-status
                      #'mastodon-alt-tl--insert-status)
       (advice-remove 'mastodon-tl--byline-boosted
