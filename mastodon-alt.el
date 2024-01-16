@@ -687,6 +687,7 @@ DETAILED-P are the same as the original wrapped function
        (mastodon-alt-tl--toot-content toot)
        (mastodon-alt-tl--toot-actions toot)
        (mastodon-alt-tl--toot-status toot))
+      'item-type    'toot
       'item-id      (or id (alist-get 'id toot))
       'base-item-id (mastodon-tl--item-id (or base-toot toot))
       'item-json    toot
