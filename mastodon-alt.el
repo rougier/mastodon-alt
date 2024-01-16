@@ -659,7 +659,7 @@ applies TIMESTAMP and CURRENT-TIME."
           (t
            (concat
             "\n"
-            (string-fill content (min (- (window-width) 2) fill-column))
+            (string-fill content (- (window-width) 2))
             "\n\n")))))
 
 (defun mastodon-alt-tl--insert-status (_orig-fun toot _body author-byline action-byline
