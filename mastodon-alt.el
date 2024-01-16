@@ -690,7 +690,8 @@ DETAILED-P are the same as the original wrapped function
       'item-id      (or id (alist-get 'id toot))
       'base-item-id (mastodon-tl--item-id (or base-toot toot))
       'item-json    toot
-      'base-toot    base-toot)
+      'base-toot    base-toot
+      'cursor-face  'mastodon-cursor-highlight-face)
      "\n")
 
     (when mastodon-tl--display-media-p
