@@ -364,7 +364,7 @@ This should be ran just before an update."
 
 If no TOOT is given, the one at point is considered."
 
-  (let* ((original-toot (or toot (get-text-property (point) 'toot-json)))
+  (let* ((original-toot (or toot (get-text-property (point) 'item-json)))
          (toot (or (alist-get 'status original-toot)
                    (when (alist-get 'type original-toot)
                      original-toot)
@@ -659,14 +659,14 @@ applies TIMESTAMP and CURRENT-TIME."
           (t
            (concat
             "\n"
-            (string-fill content (min (- (window-width) 2) fill-column))
+            (string-fill content (- (window-width) 2))
             "\n\n")))))
 
 (defun mastodon-alt-tl--insert-status (_orig-fun toot _body author-byline action-byline
-                                                 &optional id parent-toot detailed-p _thread)
+                                                 &optional id base-toot detailed-p _thread)
   "Advice to replace the insertion of a TOOT with byline first.
 
-The arguments AUTHOR-BYLINE, ACTION-BYLINE, ID, PARENT-TOOT, and
+The arguments AUTHOR-BYLINE, ACTION-BYLINE, ID, BASE-TOOT, and
 DETAILED-P are the same as the original wrapped function
 `mastodon-tl--insert-status'."
 
@@ -687,10 +687,12 @@ DETAILED-P are the same as the original wrapped function
        (mastodon-alt-tl--toot-content toot)
        (mastodon-alt-tl--toot-actions toot)
        (mastodon-alt-tl--toot-status toot))
+      'item-type    'toot
       'item-id      (or id (alist-get 'id toot))
-      'base-toot-id (mastodon-tl--item-id (or parent-toot toot))
-      'toot-json    toot
-      'parent-toot  parent-toot)
+      'base-item-id (mastodon-tl--item-id (or base-toot toot))
+      'item-json    toot
+      'base-toot    base-toot
+      'cursor-face  'mastodon-cursor-highlight-face)
      "\n")
 
     (when mastodon-tl--display-media-p
