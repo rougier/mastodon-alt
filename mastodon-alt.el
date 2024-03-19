@@ -135,6 +135,14 @@ A negative value width means `window-width - width'"
   :type 'string
   :group 'mastodon-alt-tl)
 
+(defcustom mastodon-alt-tl-toot-refill t
+  "Whether to refill toot status text.
+
+Setting to `nil' fixes some problems with line breaks
+in e.g. itemized lists."
+  :type 'boolean
+  :group 'mastodon-alt-tl)
+
 (defun mastodon-alt-tl--shorten-url-format (host _name ext)
   "Format a shorten url using HOST and EXT.
 
@@ -659,7 +667,9 @@ applies TIMESTAMP and CURRENT-TIME."
           (t
            (concat
             "\n"
-            (string-fill content (- (window-width) 2))
+	    (if mastodon-alt-tl-toot-refill
+		(string-fill content (min (- (window-width) 2) fill-column))
+	      content )
             "\n\n")))))
 
 (defun mastodon-alt-tl--insert-status (_orig-fun toot _body author-byline action-byline
