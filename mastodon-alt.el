@@ -143,6 +143,13 @@ in e.g. itemized lists."
   :type 'boolean
   :group 'mastodon-alt-tl)
 
+(defcustom mastodon-alt-tl-toot-status-align-space 2
+  "Parameter in display align-to for status line of toot.
+
+If status line overhangs, set to a larger integer, e.g. 8."
+  :type 'number
+  :group 'mastodon-alt-tl)
+
 (defun mastodon-alt-tl--shorten-url-format (host _name ext)
   "Format a shorten url using HOST and EXT.
 
@@ -531,7 +538,7 @@ To disable showing the status string at all, customize
                                   'bookmark-field t
                                   'face (mastodon-alt-tl--status-face bookmarked 0))))
              (status (concat
-                      (propertize " " 'display `(space :align-to (- right ,(+ (length status) 2))))
+                      (propertize " " 'display `(space :align-to (- right ,(+ (length status) mastodon-alt-tl-toot-status-align-space))))
                       status)))
         status))))
 
