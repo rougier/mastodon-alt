@@ -8,7 +8,7 @@
 ;; Created: January 9, 2023
 ;; Version: 0.0.1
 ;; Homepage: https://github.com/rougier/mastodon-alt
-;; Package-Requires: ((emacs "28.1") (mastodon "1.0.13"))
+;; Package-Requires: ((emacs "28.1") (mastodon "1.0.22"))
 
 ;; This file is not part of GNU Emacs.
 
@@ -680,7 +680,7 @@ applies TIMESTAMP and CURRENT-TIME."
             "\n\n")))))
 
 (defun mastodon-alt-tl--insert-status (_orig-fun toot _body author-byline action-byline
-                                                 &optional id base-toot detailed-p _thread)
+                                                 &optional id base-toot detailed-p _thread _domain)
   "Advice to replace the insertion of a TOOT with byline first.
 
 The arguments AUTHOR-BYLINE, ACTION-BYLINE, ID, BASE-TOOT, and
@@ -692,7 +692,7 @@ DETAILED-P are the same as the original wrapped function
      (propertize
       (concat
        (mastodon-alt-tl--toot-separator toot)
-       (mastodon-tl--byline toot author-byline action-byline detailed-p)
+       (mastodon-tl--byline toot author-byline action-byline detailed-p _domain)
        ;; Add linebreak if reblogged (to work with
        ;; `mastodon-alt-tl--byline-boosted'), if not showing avatars,
        ;; or if the image is short enough.
@@ -728,7 +728,7 @@ DETAILED-P are the same as the original wrapped function
 
 
 (defun mastodon-alt-tl--byline (_orig-fun toot author-byline action-byline
-                                          &optional _detailed-p)
+                                          &optional _detailed-p _domain)
   "Generate byline for TOOT.
 
 AUTHOR-BYLINE is a function for adding the author portion of
@@ -757,7 +757,7 @@ this just means displaying toot client."
       (concat
        ;; we propertize help-echo format faves for author name
        ;; in `mastodon-tl--byline-author'
-       (funcall author-byline toot)
+       (funcall author-byline toot nil _domain)
        ;; visibility:
        (cond ((equal visibility "direct")
               (concat " " (mastodon-tl--symbol 'direct)))
