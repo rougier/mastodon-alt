@@ -346,7 +346,7 @@ This should be ran just before an update."
   (remove-overlays (point-min) (point-max) 'mastodon-alt-update t)
   (let* ((overlay (make-overlay (point-min) (+ (point-min) 1) nil t))
          (width (- (window-width) 1))
-         (update (format-time-string " Update %H:%M "))
+         (update (format-time-string " Update %R "))
          (line (concat
                 (propertize "\n" 'face `(:foreground ,(face-background 'default)
                                          :extend t

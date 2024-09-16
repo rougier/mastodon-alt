@@ -1,0 +1,26 @@
+# melpazoid <https://github.com/riscy/melpazoid> build checks.
+
+name: CI
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Emacs
+        run: |
+          sudo apt-get -y install emacs || (sudo apt-get update && sudo apt-get -y install emacs)
+          emacs --version
+      - name: Ensure pip exists
+        run: |
+          command -v pip || sudo apt-get -y install python3-pip
+      - name: Install Melpazoid
+        run: |
+          ( cd ~/melpazoid && git checkout -- . && git pull --rebase ) || git clone https://github.com/riscy/melpazoid.git ~/melpazoid
+          pip install ~/melpazoid 2>/dev/null
+      - name: Run melpazoid on mastodon-alt
+        env:
+          RECIPE: (mastodon-alt :repo "rougier/mastodon-alt" :fetcher github :files ("mastodon-alt*.el"))
+          EXIST_OK: false
+        run: echo $GITHUB_REF && env LOCAL_REPO="$GITHUB_WORKSPACE" make -C ~/melpazoid
